@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca Alvarez - Frontend</title>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .layout {
+        display: flex;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .form-container, .biblioteca-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-container {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .biblioteca-container {
+        flex: 2;
+        min-width: 400px;
+        overflow-x: auto;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2f3640;
+        margin-bottom: 20px;
+    }
+    
+    /* Adicionando rótulos (labels) para os inputs ficarem mais claros no layout */
+    .input-group {
+        margin-bottom: 15px;
+    }
+    .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #555;
+    }
+
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin: 6px 0 12px 0;
+        border: 1px solid #dcdde1;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .buttons button {
+        /* Correção para alinhar botões em duas colunas, ocupando o máximo de largura */
+        flex: 1 1 100%; 
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        background-color: #273c75;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 5px; /* Espaçamento entre os botões */
+    }
+
+    .buttons button:hover {
+        background-color: #40739e;
+    }
+
+    .message {
+        text-align: center;
+        margin: 10px 0;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        /* Correção: Força o layout da tabela para manter as colunas alinhadas */
+        table-layout: fixed; 
+    }
+
+    /* Correção: Define larguras fixas para as 5 colunas para evitar o bug visual */
+    #tabelaLivros thead th:nth-child(1) { width: 10%; } /* Código */
+    #tabelaLivros thead th:nth-child(2) { width: 35%; } /* Título / Coleção */
+    #tabelaLivros thead th:nth-child(3) { width: 25%; } /* Autor */
+    #tabelaLivros thead th:nth-child(4) { width: 10%; } /* Ano */
+    #tabelaLivros thead th:nth-child(5) { width: 20%; } /* Categoria */
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #e1e1e1;
+        font-size: 14px;
+        vertical-align: middle; /* Alinhamento visual */
+        word-wrap: break-word; /* Previne que palavras longas quebrem o layout */
+    }
+
+    th {
+        background-color: #40739e;
+        color: white;
+    }
+
+    tr.colecao {
+        background-color: #f5f6fa;
+        font-weight: bold;
+    }
+
+    tr.colecao td {
+        border-bottom: 2px solid #dcdde1;
+    }
+</style>
+</head>
+<body onload="listarLivros()">
+
+<div class="layout">
+    <div class="form-container">
+        <h1>Cadastro de Livro</h1>
+        
+        <input type="text" id="titulo" placeholder="Título do livro">
+        <input type="text" id="autor" placeholder="Autor">
+        <input type="number" id="ano" placeholder="Ano de publicação">
+        <select id="categoria">
+            <option value="">Selecione a categoria</option>
+            <option value="Fantasia">Fantasia</option>
+            <option value="Romance">Romance</option>
+            <option value="Distopia">Distopia</option>
+            <option value="Ciência">Ciência</option>
+            <option value="História">História</option>
+            <option value="Tecnologia">Tecnologia</option>
+        </select>
+        <input type="text" id="nomeColecao" placeholder="Nome da coleção (opcional)">
+        <div class="buttons">
+            <button onclick="criarLivro()">Adicionar Livro</button>
+            <button onclick="criarColecao()">Criar Coleção</button>
+            <button onclick="listarLivros()">Listar</button>
+            <button onclick="atualizarLivro()">Atualizar</button>
+            <button onclick="deletarLivro()">Deletar</button>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="biblioteca-container">
+        <h1>Biblioteca</h1>
+        <table id="tabelaLivros">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título / Coleção</th>
+                    <th>Autor</th>
+                    <th>Ano</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // URL da sua API Backend (MUDE ISSO para a URL da nuvem quando fizer o Deploy!)
+    const API_URL = "http://localhost:3000/api/livros"; 
+
+    function mostrarMensagem(texto, cor = "red") {
+        const msg = document.getElementById("message");
+        msg.style.color = cor;
+        msg.textContent = texto;
+        setTimeout(() => msg.textContent = "", 3000);
+    }
+
+    // --- FUNÇÕES DE CONTROLE (CLIENTE) ---
+
+    async function criarLivro() {
+        const titulo = document.getElementById("titulo").value.trim();
+        const autor = document.getElementById("autor").value.trim();
+        const ano = parseInt(document.getElementById("ano").value);
+        const categoria = document.getElementById("categoria").value;
+        const nomeColecao = document.getElementById("nomeColecao").value.trim();
+
+        if (!titulo || !autor || !ano || !categoria) {
+            mostrarMensagem("Preencha todos os campos obrigatórios!");
+            return;
+        }
+
+        const dadosLivro = { titulo, autor, ano, categoria, nomeColecao };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosLivro)
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+                mostrarMensagem(`Livro "${titulo}" adicionado!`, "green");
+                // Limpar formulário após sucesso
+                document.getElementById("titulo").value = "";
+                document.getElementById("autor").value = "";
+                document.getElementById("ano").value = "";
+                document.getElementById("categoria").value = "";
+                document.getElementById("nomeColecao").value = "";
+            } else {
+                mostrarMensagem(`Erro (${response.status}): ${resultado.message || 'Falha ao adicionar livro'}`);
+            }
+        } catch (error) {
+            mostrarMensagem("Erro de comunicação com o servidor. Verifique se o Backend está rodando.");
+        }
+
+        listarLivros();
+    }
+
+    async function criarColecao() {
+        const nomeColecao = prompt("Digite o nome da nova coleção:");
+        if (!nomeColecao) return;
+
+        try {
+            const response = await fetch(API_URL + '/colecao', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome: nomeColecao })
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+                mostrarMensagem(`Coleção "${nomeColecao}" criada!`, "green");
+            } else {
+                mostrarMensagem(`Erro (${response.status}): ${resultado.message || 'Falha ao criar coleção'}`);
+            }
+        } catch (error) {
+            mostrarMensagem("Erro de comunicação com o servidor.");
+        }
+        listarLivros();
+    }
+
+    async function listarLivros() {
+        const tbody = document.querySelector("#tabelaLivros tbody");
+        tbody.innerHTML = "<tr><td colspan='5'>Carregando...</td></tr>";
+
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error("Falha ao carregar dados do Backend.");
+            }
+            const colecoes = await response.json();
+            
+            tbody.innerHTML = "";
+            
+            if (colecoes.length === 0) {
+                 tbody.innerHTML = "<tr><td colspan='5'>Nenhum livro ou coleção cadastrada.</td></tr>";
+                 return;
+            }
+
+            colecoes.forEach(colecao => {
+                // Linha da Coleção: colspan="4" cobre as colunas de Título, Autor, Ano e Categoria
+                const trColecao = document.createElement("tr");
+                trColecao.classList.add("colecao");
+                trColecao.innerHTML = `<td>-</td><td colspan="4">Coleção: ${colecao.nome}</td>`;
+                tbody.appendChild(trColecao);
+
+                // Linhas dos Livros
+                if (colecao.itens.length === 0) {
+                    const trVazio = document.createElement("tr");
+                    trVazio.innerHTML = `<td colspan="5" style="font-style: italic; color: #777; text-align: center;">Vazio.</td>`;
+                    tbody.appendChild(trVazio);
+                } else {
+                    colecao.itens.forEach(livro => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${livro.codigo}</td>
+                            <td>↳ ${livro.titulo}</td>
+                            <td>${livro.autor}</td>
+                            <td>${livro.ano}</td>
+                            <td>${livro.categoria}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            });
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan='5' style='color:red;'>Erro ao conectar com o Backend: ${error.message}</td></tr>`;
+        }
+    }
+
+    async function atualizarLivro() {
+        const codigo = prompt("Digite o código do livro que deseja atualizar:");
+        if (!codigo || isNaN(parseInt(codigo))) {
+            mostrarMensagem("Código inválido!");
+            return;
+        }
+
+        const titulo = prompt("Novo título (deixe em branco para não alterar):");
+        const autor = prompt("Novo autor (deixe em branco para não alterar):");
+        const anoStr = prompt("Novo ano (deixe em branco para não alterar):");
+        const categoria = prompt("Nova categoria (deixe em branco para não alterar):");
+        
+        const dadosAtualizados = {};
+        if (titulo !== null && titulo.trim() !== "") dadosAtualizados.titulo = titulo;
+        if (autor !== null && autor.trim() !== "") dadosAtualizados.autor = autor;
+        if (anoStr !== null && anoStr.trim() !== "") {
+            const ano = parseInt(anoStr);
+            if (!isNaN(ano)) dadosAtualizados.ano = ano;
+        }
+        if (categoria !== null && categoria.trim() !== "") dadosAtualizados.categoria = categoria;
+
+        if (Object.keys(dadosAtualizados).length === 0) {
+            mostrarMensagem("Nenhum dado fornecido para atualização.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/${codigo}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosAtualizados)
+            });
+            
+            // Tenta parsear o resultado, mesmo se for erro (exceto 204)
+            const resultado = response.status !== 204 ? await response.json() : {};
+
+            if (response.ok) {
+                mostrarMensagem(resultado.message || `Livro ${codigo} atualizado!`, "green");
+            } else {
+                mostrarMensagem(`Erro (${response.status}): ${resultado.message || 'Falha ao atualizar livro'}`);
+            }
+        } catch (error) {
+            mostrarMensagem("Erro de comunicação com o servidor.");
+        }
+
+        listarLivros();
+    }
+
+    async function deletarLivro() {
+        const codigo = prompt("Digite o código do livro que deseja deletar:");
+        if (!codigo || isNaN(parseInt(codigo))) {
+            mostrarMensagem("Código inválido!");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/${codigo}`, {
+                method: 'DELETE',
+            });
+            
+            // 204 No Content para deleção bem sucedida
+            if (response.status === 204) {
+                mostrarMensagem("Livro deletado!", "green");
+            } else {
+                // Tenta parsear a mensagem de erro (404, 400, 500)
+                const resultado = await response.json();
+                mostrarMensagem(`Erro (${response.status}): ${resultado.message || 'Falha ao deletar livro'}`);
+            }
+        } catch (error) {
+            mostrarMensagem("Erro de comunicação com o servidor.");
+        }
+
+        listarLivros();
+    }
+</script>
+
+</body>
+</html>
