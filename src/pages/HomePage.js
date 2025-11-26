@@ -1,6 +1,6 @@
-import { BookForm } from '../molecules/BookForm.js';
-import { LibraryTable } from '../organisms/LibraryTable.js';
-import { MainTemplate } from '../templates/MainTemplate.js';
+import { BookForm } from '../Components/BookForm.js';
+import { LibraryTable } from '../Components/LibraryTable.js';
+import { MainTemplate } from '../Components/MainTemplate.js';
 
 export const HomePage = () => {
   const app = document.getElementById('app');

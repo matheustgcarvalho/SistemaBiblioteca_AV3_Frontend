@@ -1,5 +1,5 @@
-import { listar, atualizar, deletar } from '../api/livros.js';
-import { showMessage } from '../molecules/Message.js';
+import { listar, atualizar, deletar } from '../Services/livros.js';
+import { showMessage } from './Message.js';
 
 export const LibraryTable = () => {
   const wrap = document.createElement('div');

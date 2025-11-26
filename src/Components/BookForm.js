@@ -1,8 +1,8 @@
-import { Input } from '../atoms/Input.js';
-import { Button } from '../atoms/Button.js';
-import { adicionar, criarColecao } from '../api/livros.js';
-import { atualizarLivroFlow, deletarLivroFlow } from '../organisms/LibraryTable.js';
+import { Input } from './Input.js';
+import { Button } from './Button.js';
+import { adicionar, criarColecao } from '../Services/livros.js';
 import { showMessage } from './Message.js';
+import { atualizarLivroFlow, deletarLivroFlow } from './LibraryTable.js';
 
 export const BookForm = (onSuccess) => {
   const container = document.createElement('div');

@@ -4,143 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biblioteca Alvarez - Frontend</title>
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        margin: 0;
-        padding: 20px;
-    }
-
-    .layout {
-        display: flex;
-        gap: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .form-container, .biblioteca-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-
-    .form-container {
-        flex: 1;
-        min-width: 300px;
-    }
-
-    .biblioteca-container {
-        flex: 2;
-        min-width: 400px;
-        overflow-x: auto;
-    }
-
-    h1 {
-        text-align: center;
-        color: #2f3640;
-        margin-bottom: 20px;
-    }
-    
-    /* Adicionando rótulos (labels) para os inputs ficarem mais claros no layout */
-    .input-group {
-        margin-bottom: 15px;
-    }
-    .input-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 14px;
-        font-weight: bold;
-        color: #555;
-    }
-
-
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin: 6px 0 12px 0;
-        border: 1px solid #dcdde1;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .buttons button {
-        /* Correção para alinhar botões em duas colunas, ocupando o máximo de largura */
-        flex: 1 1 100%; 
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        background-color: #273c75;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-bottom: 5px; /* Espaçamento entre os botões */
-    }
-
-    .buttons button:hover {
-        background-color: #40739e;
-    }
-
-    .message {
-        text-align: center;
-        margin: 10px 0;
-        font-weight: bold;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        /* Correção: Força o layout da tabela para manter as colunas alinhadas */
-        table-layout: fixed; 
-    }
-
-    /* Correção: Define larguras fixas para as 5 colunas para evitar o bug visual */
-    #tabelaLivros thead th:nth-child(1) { width: 10%; } /* Código */
-    #tabelaLivros thead th:nth-child(2) { width: 35%; } /* Título / Coleção */
-    #tabelaLivros thead th:nth-child(3) { width: 25%; } /* Autor */
-    #tabelaLivros thead th:nth-child(4) { width: 10%; } /* Ano */
-    #tabelaLivros thead th:nth-child(5) { width: 20%; } /* Categoria */
-
-    th, td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #e1e1e1;
-        font-size: 14px;
-        vertical-align: middle; /* Alinhamento visual */
-        word-wrap: break-word; /* Previne que palavras longas quebrem o layout */
-    }
-
-    th {
-        background-color: #40739e;
-        color: white;
-    }
-
-    tr.colecao {
-        background-color: #f5f6fa;
-        font-weight: bold;
-    }
-
-    tr.colecao td {
-        border-bottom: 2px solid #dcdde1;
-    }
-</style>
+<link rel="stylesheet" href="./src/Styles/main.css">
 </head>
 <body>
 
 <div id="app"></div>
 
 <script src="./config.js"></script>
-<script type="module" src="./src/main.js"></script>
+<script type="module" src="./src/Views/main.js"></script>
 
 </body>
 </html>
