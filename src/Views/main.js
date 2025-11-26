@@ -1,5 +1,5 @@
 import { register, start } from '../Context/router.js';
-import { HomePage } from '../Pages/HomePage.js';
+import { HomePage } from '../pages/HomePage.js';
 
 register('/', HomePage);
 
