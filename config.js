@@ -1,3 +1,3 @@
 window.CONFIG = {
-  API_URL: 'http://localhost:3000/api/livros'
+  API_URL: 'https://sistemabiblioteca-av3-backend.onrender.com/api/livros'
 };
